@@ -1,6 +1,6 @@
 -module(kvish_config).
 
--export([dispatch/0, web_config/0, tcp_config/0]).
+-export([dispatch/0, web_config/0, tcp_config/0, udp_config/0]).
 
 -spec dispatch() -> [webmachine_dispatcher:route()].
 dispatch() ->
@@ -23,5 +23,10 @@ web_config() ->
 tcp_config() ->
     {ok, App} = application:get_application(?MODULE),
     {ok, Port} = application:get_env(App, tcp_port),
+    [{port, Port}].
+
+udp_config() ->
+    {ok, App} = application:get_application(?MODULE),
+    {ok, Port} = application:get_env(App, udp_port),
     [{port, Port}].
 

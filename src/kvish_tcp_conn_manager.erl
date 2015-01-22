@@ -30,7 +30,7 @@ init([Port, ListenersSize]) ->
     case gen_tcp:listen(Port, ?TCP_OPTIONS) of
         {ok, Socket} ->
             ok = spawn_listeners(Socket, ListenersSize),
-            error_logger:info_msg("Server started on port ~p, listeners size ~p~n", [Port, ListenersSize]),
+            error_logger:info_msg("TCP Server started on port ~p, listeners size ~p~n", [Port, ListenersSize]),
             {ok, #server_state{socket = Socket, listeners_size = ListenersSize}};
         {error, Reason} ->
             {stop, Reason}
@@ -51,8 +51,8 @@ handle_cast(_Msg, State) ->
 handle_info(_Info, State) ->
     {noreply, State}.
 
-terminate(_Reason, _State) ->
-    ok.
+terminate(_Reason, #server_state{socket = Socket}) ->
+    gen_tcp:close(Socket).
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.

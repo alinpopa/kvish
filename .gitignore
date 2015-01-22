@@ -1,6 +1,8 @@
 *.swp
-.rebar
+.rebar/
 erl_crash.dump
-ebin
-deps
+ebin/
+deps/
+*.beam
+.eunit/
 

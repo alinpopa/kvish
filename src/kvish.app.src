@@ -17,6 +17,7 @@
   {env, [
       {wm_ip, "0.0.0.0"},
       {wm_port, 9991},
-      {tcp_port, 9992}
+      {tcp_port, 9992},
+      {udp_port, 9993}
   ]}
  ]}.
