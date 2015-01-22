@@ -23,3 +23,88 @@
       - request: `<<"PUT some_key value_to_be_stored">>`, response: `<<"OK">>`;  
       - if case of any error (including key not found), the response will be `<<"ERROR:reason">>`;  
 
+### Examples:
+
+UDP (save and fetch value):
+    
+    echo -n "put abc 12345" | nc -u localhost 9993
+    OK
+    echo -n "get abc" | nc -u localhost 9993
+    VALUE:12345
+
+TCP (fetch and save value):
+    
+    echo -n "get abc" | nc localhost 9992
+    VALUE:12345
+    echo -n "put 624 some content" | nc localhost 9992
+    OK
+    echo -n "get 624" | nc localhost 9992
+    VALUE:some content
+
+HTTP (get an existing value by key):
+    
+    curl -XGET "http://0.0.0.0:9991/kv/624" -v
+    * Hostname was NOT found in DNS cache
+    *   Trying 0.0.0.0...
+    * Connected to 0.0.0.0 (127.0.0.1) port 9991 (#0)
+    > GET /kv/624 HTTP/1.1
+    > User-Agent: curl/7.37.1
+    > Host: 0.0.0.0:9991
+    > Accept: */*
+    >
+    < HTTP/1.1 200 OK
+    * Server MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?) is not blacklisted
+    < Server: MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?)
+    < Date: Thu, 22 Jan 2015 22:24:24 GMT
+    < Content-Type: application/octet-stream
+    < Content-Length: 18
+    <
+    * Connection #0 to host 0.0.0.0 left intact
+    VALUE:some content
+
+HTTP (save a value for the given key):
+    
+    curl -XPUT "http://0.0.0.0:9991/kv/100" --header 'Content-Type: application/octet-stream' --data 'Contentish' -v
+    * Hostname was NOT found in DNS cache
+    *   Trying 0.0.0.0...
+    * Connected to 0.0.0.0 (127.0.0.1) port 9991 (#0)
+    > PUT /kv/100 HTTP/1.1
+    > User-Agent: curl/7.37.1
+    > Host: 0.0.0.0:9991
+    > Accept: */*
+    > Content-Type: application/octet-stream
+    > Content-Length: 10
+    >
+    * upload completely sent off: 10 out of 10 bytes
+    < HTTP/1.1 200 OK
+    * Server MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?) is not blacklisted
+    < Server: MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?)
+    < Date: Thu, 22 Jan 2015 22:25:31 GMT
+    < Content-Type: application/octet-stream
+    < Content-Length: 2
+    <
+    * Connection #0 to host 0.0.0.0 left intact
+    OK
+
+HTTP (404 when looking for an unexisting key):
+    
+    curl -XGET "http://0.0.0.0:9991/kv/9999" -v
+    * Hostname was NOT found in DNS cache
+    *   Trying 0.0.0.0...
+    * Connected to 0.0.0.0 (127.0.0.1) port 9991 (#0)
+    > GET /kv/9999 HTTP/1.1
+    > User-Agent: curl/7.37.1
+    > Host: 0.0.0.0:9991
+    > Accept: */*
+    >
+    < HTTP/1.1 404 Object Not Found
+    * Server MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?) is not blacklisted
+    < Server: MochiWeb/1.1 WebMachine/1.10.7 (we're aiming for the pool, right?)
+    < Date: Thu, 22 Jan 2015 22:26:02 GMT
+    < Content-Type: application/octet-stream
+    < Content-Length: 19
+    <
+    * Connection #0 to host 0.0.0.0 left intact
+    ERROR:key_not_found
+
+
