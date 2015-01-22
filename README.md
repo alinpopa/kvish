@@ -27,13 +27,27 @@
 
 UDP (save and fetch value):
     
+
     echo -n "put abc 12345" | nc -u localhost 9993
     OK
     echo -n "get abc" | nc -u localhost 9993
     VALUE:12345
 
+UDP (invalid message - when `get` is missing the `key`):
+    
+
+    echo -n "get" | nc -u localhost 9993
+    RROR:invalid_message
+
+UDP (invalid command):
+    
+
+    echo -n "inv 345" | nc -u localhost 9993
+    ERROR:invalid_command
+
 TCP (fetch and save value):
     
+
     echo -n "get abc" | nc localhost 9992
     VALUE:12345
     echo -n "put 624 some content" | nc localhost 9992
@@ -43,6 +57,7 @@ TCP (fetch and save value):
 
 HTTP (get an existing value by key):
     
+
     curl -XGET "http://0.0.0.0:9991/kv/624" -v
     * Hostname was NOT found in DNS cache
     *   Trying 0.0.0.0...
@@ -64,6 +79,7 @@ HTTP (get an existing value by key):
 
 HTTP (save a value for the given key):
     
+
     curl -XPUT "http://0.0.0.0:9991/kv/100" --header 'Content-Type: application/octet-stream' --data 'Contentish' -v
     * Hostname was NOT found in DNS cache
     *   Trying 0.0.0.0...
@@ -88,6 +104,7 @@ HTTP (save a value for the given key):
 
 HTTP (404 when looking for an unexisting key):
     
+
     curl -XGET "http://0.0.0.0:9991/kv/9999" -v
     * Hostname was NOT found in DNS cache
     *   Trying 0.0.0.0...
