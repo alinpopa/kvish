@@ -1,8 +1,14 @@
+### Requirements:
+
+  + `gnu make`
+  + `erlang > R15B` (tested with `R15B`, `R16B`, `R16B01`, and `17.4`)
+
 ### Configuration:
 
   + by default the `kvish` system uses the following ports:
     - rest interface port `9991` (can be modified within `kvish.app.src`)
     - tcp interface port `9992` (can be modified within `kvish.app.src`)
+    - udp interface port `9993` (can be modified within `kvish.app.src`)
 
 ### Run:
 

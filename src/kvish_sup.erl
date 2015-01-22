@@ -1,12 +1,7 @@
 -module(kvish_sup).
 -behaviour(supervisor).
 
-%% External exports
--export([
-  start_link/0
-]).
-
-%% supervisor callbacks
+-export([start_link/0]).
 -export([init/1]).
 
 start_link() ->
