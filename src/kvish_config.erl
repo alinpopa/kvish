@@ -6,7 +6,7 @@
 dispatch() ->
     lists:flatten([
         {[], kvish_wm_resource, []},
-        {["kv"], kvish_wm_kv_resource, []}
+        {["kv", key], kvish_wm_kv_resource, []}
     ]).
 
 web_config() ->

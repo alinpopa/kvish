@@ -24,7 +24,6 @@ spawn_listeners(Socket, Size) ->
     ?LISTENER:start_link(Socket),
     spawn_listeners(Socket, Size - 1).
 
-
 %% Callback functions
 init([Port, ListenersSize]) ->
     case gen_tcp:listen(Port, ?TCP_OPTIONS) of

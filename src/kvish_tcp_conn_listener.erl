@@ -23,13 +23,6 @@ handle_cast({listen}, State) ->
     inet:setopts(ClientSocket, [{active, once}]),
     ?LISTENER_MANAGER:detach(),
     {noreply, State#conn_state{client_socket = ClientSocket}};
-handle_cast({close}, State) ->
-    error_logger:info_msg("Connection closed by server (concurrent no. of processes ~p)~n", [length(processes())]),
-    gen_tcp:close(State#conn_state.client_socket),
-    {stop, normal, State};
-handle_cast({send_to_client, Msg}, State) ->
-    gen_tcp:send(State#conn_state.client_socket, [Msg]),
-    {noreply, State};
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
@@ -38,8 +31,9 @@ handle_call(_Request, _From, State) ->
 
 handle_info({tcp, _ClientSocket, BinMsg}, State) ->
     Message = kvish_message_parser:parse(BinMsg),
-    error_logger:info_msg("GOT MESSAGE ~p~n", [Message]),
     inet:setopts(State#conn_state.client_socket, [{active, once}]),
+    Response = kvish_kv_store:execute(Message),
+    gen_tcp:send(State#conn_state.client_socket, [Response]),
     {noreply, State};
 handle_info({tcp_closed, _ClientSocket}, State) ->
     error_logger:info_msg("Connection closed by client (concurrent no. of processes ~p)~n", [length(processes())]),
@@ -53,5 +47,4 @@ terminate(_Reason, _State) ->
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
 

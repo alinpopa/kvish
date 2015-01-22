@@ -58,6 +58,7 @@ process_request(ClientSocket, ClientAddress, ClientPort, Request) ->
     fun() ->
             Message = kvish_message_parser:parse(Request),
             error_logger:info_msg("Processing UDP message ~p~n", [Message]),
-            ok = gen_udp:send(ClientSocket, ClientAddress, ClientPort, <<"Alright">>)
+            Response = kvish_kv_store:execute(Message),
+            ok = gen_udp:send(ClientSocket, ClientAddress, ClientPort, Response)
     end,
     proc_lib:spawn_link(ProcessingFun).

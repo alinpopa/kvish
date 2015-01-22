@@ -3,7 +3,9 @@ APP := kvish
 
 .PHONY: deps
 
-all: deps eunit
+all: deps compile eunit
+
+compile:
 	@./rebar compile
 
 eunit:

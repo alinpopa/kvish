@@ -27,6 +27,9 @@ init([]) ->
     Udp =
         {kvish_udp_conn_listener, {kvish_udp_conn_listener, start_link, [UdpPort]},
         permanent, 5000, worker, [kvish_udp_conn_listener]},
-    Processes = [Rest, Tcp, Udp],
+    KVStore =
+        {kvish_kv_store, {kvish_kv_store, start_link, []},
+         permanent, 5000, worker, [kvish_kv_store]},
+    Processes = [KVStore, Rest, Tcp, Udp],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 

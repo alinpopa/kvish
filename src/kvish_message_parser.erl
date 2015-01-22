@@ -15,6 +15,8 @@ parse(Bin) ->
                     {get, Key};
                 {ok, Key, Value} when Command =:= put ->
                     {put, Key, Value};
+                {ok, Key} when Command =:= get ->
+                    {get, Key};
                 Els ->
                     Els
             end;
@@ -53,6 +55,8 @@ parse_key(Bin) ->
     case binary:split(Bin, <<32>>) of
         [Key, Rest] ->
             {ok, Key, Rest};
+        [Key] ->
+            {ok, Key};
         _ ->
             {error, invalid_message}
     end.
